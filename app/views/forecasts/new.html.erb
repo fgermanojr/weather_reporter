@@ -1,2 +1,22 @@
 <h1>Forecasts#new</h1>
-<p>Find me in app/views/forecasts/new.html.erb</p>
+<p id="notice"><%= notice %></p>
+
+<%= form_for @forecast, url: forecasts_show_path, method: 'get' do |form| %>
+  <%= form.label :zipcode %>
+  <%= form.text_field :zipcode, size: 5, required: true %>
+
+  <% if @forecast.errors.any? %>
+    <div id="error_explanation">
+      <ul>
+      <% book.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+

@@ -1,2 +1,14 @@
 <h1>Forecasts#show</h1>
-<p>Find me in app/views/forecasts/show.html.erb</p>
+<p id="notice"><%= notice %></p>
+
+<table>
+  <tbody>
+    <tr><td>Zip Code:</td><td><%= @zipcode%></td></tr>
+    <tr><td>Location Name:</td><td><%= @forecast_display[:location_name]%></td></tr>
+    <tr><td>Location Region:</td><td><%= @forecast_display[:location_region]%></td></tr>
+    <tr><td>Degrees Farenheit:</td><td><%= @forecast_display[:current_temp_f]%></td></tr>
+  </tbody>
+</table>
+
+<br>
+<%= link_to 'New Request', forecasts_new_path(@forecast) %>
