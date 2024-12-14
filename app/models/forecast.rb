@@ -8,26 +8,46 @@ class Forecast < ApplicationRecord
   CURRENT_URL = 'http://api.weatherapi.com/v1/current.json?'
   FORECAST_URL = 'http://api.weatherapi.com/v1/forecast.json?' 
   HISTORY_URL = 'http://api.weatherapi.com/v1/history.json?' 
-   #key=162cfc912bc544bba9b195514241212&q=87507&dt=2024-12-12'
 
-  def cached_forecast(zipcode)
-    Rails.cache.fetch("wxzipcode#{zipcode}", expires_in: 1.minute) do # TBD change to 30.minutes
-      # status, result_json
-      # The expensive operation
-      forecast_current(zipcode)
+  def cache_forecast(zipcode)
+    # status, result_json
+    # The expensive operation
+    current_hash = nil
+    status, parsed_json = forecast_forecast(zipcode)
+    if status == 'Ok'
+      Rails.cache.fetch("wxzipcode#{zipcode}", expires_in: 1.minute) do # TBD *** change to 30.minutes
+        current_hash = extract_current(parsed_json)
+        forecast_array = extract_forecast(parsed_json)
+        current_hash[:forecast] = forecast_array
+        current_hash
+      end
+      return [status, current_hash]
+    else
+      return [status, parsed_json]
     end
   end
 
-  # Twoforecast_methods are defined to pull, using a json request, different forecasts
-  # from weatherapi; the current forecast is now working. TBD Just pull forecast, includes current.
-  def forecast_current(zipcode)
-    url = "#{CURRENT_URL}key=#{API_KEY}&q=#{zipcode}"
-    response = HTTParty.get(url)
-
-    format_response(response.body)
+  def cached_forecast_result(zipcode)
+    cached_result = Rails.cache.read("wxzipcode#{zipcode}")
+    if cached_result
+      return ['Cached', cached_result]
+    else
+      # API call
+      status, result = cache_forecast(zipcode)
+      if status == 'Ok'
+        return ['Api', result]
+      else
+        # we don't want to cache a error value
+        # {"error"=>{"code"=>1006, "message"=>"No matching location found."}}
+        # other api errors are possible, bad token, network error, ...
+        message = result['error']['message']
+        return ['Error', message]
+      end
+    end
   end
 
   def format_response(response)
+    # we break out the error, so success is easily recognized
     parsed_json = JSON.parse(response)
     if parsed_json['error'].present?
       return ['Error', parsed_json]
@@ -66,26 +86,19 @@ class Forecast < ApplicationRecord
   def forecast_forecast(zipcode)
     url = "#{FORECAST_URL}key=#{API_KEY}&q=#{zipcode}&days=5"
     response = HTTParty.get(url)
+
+    format_response(response.body)
   end
 
   def extract_forecast(parsed_json)
-    forecast_date_array = parsed_json['forecast']['forecast_date_array']
+    forecast_date_array = parsed_json['forecast']['forecastday']
     forecast_date_array.map do |forecast_day|
        { 
         date: forecast_day['date'],
-        max_temp_f: forecast_day['maxtemp_f'],
+        max_temp_f: forecast_day['day']['maxtemp_f'],
         min_temp_f: forecast_day['day']['mintemp_f'],
         condition: forecast_day['day']['condition']['text']
        }
     end
-
-  # def forecast_history(zipcode)
-  #   #key=162cfc912bc544bba9b195514241212&q=87507&dt=2024-12-12'
-  #   url = "#{FORECAST_URL}key=#{API_KEY}&q=#{zipcode}"
-  #   response = HTTParty.get(url)
-  # end
-
-  # def extract_history
-
-  # end
+  end
 end

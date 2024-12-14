@@ -7,23 +7,21 @@ class ForecastsController < ApplicationController
     @zipcode = forecast_params[:zipcode]
     @forecast = Forecast.new(zipcode: @zipcode)
 
+    # Is the input param valid?
     unless @forecast.valid?
       redirect_to :forecasts_new, notice: "ZipCode is missing or not 5 digits"; return
     end
 
-    # status, result_json = @forecast.forecast_current(@zipcode)
-    
-    @is_cached = is_cached(@zipcode) # used to display from cache
-
-    # this code will return that cache value, or requery and cache it
-    status, result_json = @forecast.cached_forecast(@zipcode)
-
-    if status == 'Ok'
-      @forecast_display = @forecast.extract_current(result_json)
-      # a hash with 3 components; add min_temp_f, max_temp_f, then forecast, 5 day
-      # This is what we want to cache, actually, result from 2nd query,  too
+    status, result = @forecast.cached_forecast_result(@zipcode)
+    if status == 'Cached'
+      @is_cached = true
+      @forecast_display = result
+    elsif status == 'Api'
+      @is_cached = false
+      @forecast_display = result
     else
-      redirect_to :forecasts_new, notice: "ZipCode not found"
+      notice = 'Zipcode not found'
+      redirect_to :forecasts_new, notice: notice
     end
   end
 

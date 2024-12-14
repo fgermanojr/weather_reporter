@@ -1,6 +1,6 @@
 <h1>Forecasts#show</h1>
 <p id="notice"><%= notice %></p>
-
+<h2>Current</h2>
 <table>
   <tbody>
     <tr><td>Zip Code:</td><td><%= @zipcode%></td></tr>
@@ -8,6 +8,28 @@
     <tr><td>Location Name:</td><td><%= @forecast_display[:location_name]%></td></tr>
     <tr><td>Location Region:</td><td><%= @forecast_display[:location_region]%></td></tr>
     <tr><td>Degrees Farenheit:</td><td><%= @forecast_display[:current_temp_f]%></td></tr>
+  </tbody>
+</table>
+<h2>Forecast</h2>
+<table>
+  <thead>
+  <tr>
+    <th colspan="2">Date</th>
+    <th>Min Temp</th>
+    <th>Max Temp</th>
+    <th colspan="2">Comment</th>
+  </tr>
+  </thead>
+
+  <tbody>
+    <% @forecast_display[:forecast].each do |day| %>
+      <tr>
+        <td colspan="2"><%= day[:date] %></td>
+        <td><%= day[:min_temp_f] %></td>
+        <td><%= day[:max_temp_f] %></td>
+        <td colspan="2"><%= day[:condition] %></td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 
