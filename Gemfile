@@ -53,6 +53,8 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
   gem 'rspec-rails', '~> 7.1'
+  gem 'capybara'
+  gem 'factory_bot', '~> 6.5'
 end
 
 group :development do

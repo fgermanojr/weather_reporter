@@ -14,20 +14,20 @@
 <table>
   <thead>
   <tr>
-    <th colspan="2">Date</th>
+    <th>Date</th>
     <th>Min Temp</th>
     <th>Max Temp</th>
-    <th colspan="2">Comment</th>
+    <th>Comment</th>
   </tr>
   </thead>
 
   <tbody>
     <% @forecast_display[:forecast].each do |day| %>
       <tr>
-        <td colspan="2"><%= day[:date] %></td>
+        <td><%= day[:date] %></td>
         <td><%= day[:min_temp_f] %></td>
         <td><%= day[:max_temp_f] %></td>
-        <td colspan="2"><%= day[:condition] %></td>
+        <td><%= day[:condition] %></td>
       </tr>
     <% end %>
   </tbody>
