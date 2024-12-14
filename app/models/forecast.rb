@@ -10,14 +10,30 @@ class Forecast < ApplicationRecord
   HISTORY_URL = 'http://api.weatherapi.com/v1/history.json?' 
    #key=162cfc912bc544bba9b195514241212&q=87507&dt=2024-12-12'
 
+  def cached_forecast(zipcode)
+    Rails.cache.fetch("wxzipcode#{zipcode}", expires_in: 1.minute) do # TBD change to 30.minutes
+      # status, result_json
+      # The expensive operation
+      forecast_current(zipcode)
+    end
+  end
+
+  # Twoforecast_methods are defined to pull, using a json request, different forecasts
+  # from weatherapi; the current forecast is now working. TBD Just pull forecast, includes current.
   def forecast_current(zipcode)
     url = "#{CURRENT_URL}key=#{API_KEY}&q=#{zipcode}"
     response = HTTParty.get(url)
 
-    if response['error'].present?
-      return ['Error', JSON.parse(response.body)]
+    format_response(response.body)
+  end
+
+  def format_response(response)
+    parsed_json = JSON.parse(response)
+    if parsed_json['error'].present?
+      return ['Error', parsed_json]
+      #                looks like {"error"=>{"code"=>1006, "message"=>"No matching location found."}}
     else
-      return ['Ok', JSON.parse(response.body)]
+      return ['Ok', parsed_json]
     end
   end
 
@@ -47,14 +63,21 @@ class Forecast < ApplicationRecord
     { location_name: location_name, location_region: location_region, current_temp_f: current_temp_f }
   end
 
-  # def forecast_forecast(zipcode)
-  #   url = "#{FORECAST_URL}key=#{API_KEY}&q=#{zipcode}&days=1"
-  #   response = HTTParty.get(url)
-  # end
+  def forecast_forecast(zipcode)
+    url = "#{FORECAST_URL}key=#{API_KEY}&q=#{zipcode}&days=5"
+    response = HTTParty.get(url)
+  end
 
-  # def extract_forecast
-
-  # end
+  def extract_forecast(parsed_json)
+    forecast_date_array = parsed_json['forecast']['forecast_date_array']
+    forecast_date_array.map do |forecast_day|
+       { 
+        date: forecast_day['date'],
+        max_temp_f: forecast_day['maxtemp_f'],
+        min_temp_f: forecast_day['day']['mintemp_f'],
+        condition: forecast_day['day']['condition']['text']
+       }
+    end
 
   # def forecast_history(zipcode)
   #   #key=162cfc912bc544bba9b195514241212&q=87507&dt=2024-12-12'
