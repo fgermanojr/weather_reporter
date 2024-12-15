@@ -1,17 +1,20 @@
 class Forecast < ApplicationRecord
-  require 'httparty'
+  require 'httparty' # could have used Net::HTTP directly, but some abstraction added
 
   validates :zipcode, length: {minimum: 5, maximum: 5}, numericality: { only_integer: true }, allow_blank: false
 
-  API_KEY = '162cfc912bc544bba9b195514241212' # TBD put in secrets, for weatherapi.com
-
-  CURRENT_URL = 'http://api.weatherapi.com/v1/current.json?'
+  CURRENT_URL = 'http://api.weatherapi.com/v1/current.json?' # not used
   FORECAST_URL = 'http://api.weatherapi.com/v1/forecast.json?' 
-  HISTORY_URL = 'http://api.weatherapi.com/v1/history.json?' 
+  HISTORY_URL = 'http://api.weatherapi.com/v1/history.json?' # not used
 
   def cache_forecast(zipcode)
-    # status, result_json
-    # The expensive operation
+    # make api call, cache needed ui result from api
+    # calls forecast_forecast to make api call
+    # then calls extract_current, extract_forecast, to return a current_hash with forecast added
+    # key used wxzipcodeNNNNN
+    # returns status, result_json (or err hash)
+    # The expensive operation, the api call
+    # it could return an error, don't cache that.
     current_hash = nil
     status, parsed_json = forecast_forecast(zipcode)
     if status == 'Ok'
@@ -28,6 +31,11 @@ class Forecast < ApplicationRecord
   end
 
   def cached_forecast_result(zipcode)
+    # returns cached result if in cache
+    # otherwise api call
+    # if good, cache it and return new value
+    # otherwise return error without caching
+    # return is [status, result], error returned in result
     cached_result = Rails.cache.read("wxzipcode#{zipcode}")
     if cached_result
       return ['Cached', cached_result]
@@ -47,11 +55,13 @@ class Forecast < ApplicationRecord
   end
 
   def format_response(response)
-    # we break out the error, so success is easily recognized
+    # we break out the error status, so success is easily recognized
     parsed_json = JSON.parse(response)
+    # different apis will have different way of flagging errors
     if parsed_json['error'].present?
       return ['Error', parsed_json]
       #                looks like {"error"=>{"code"=>1006, "message"=>"No matching location found."}}
+      # we are passing a api specific error detail up to caller, ok here, but think about other apis
     else
       return ['Ok', parsed_json]
     end
@@ -84,7 +94,8 @@ class Forecast < ApplicationRecord
   end
 
   def forecast_forecast(zipcode)
-    url = "#{FORECAST_URL}key=#{API_KEY}&q=#{zipcode}&days=5"
+    api_key = '162cfc912bc544bba9b195514241212' # TBD Get this from ENV['WEATHER_API_KEY' IS FAILING]
+    url = "#{FORECAST_URL}key=#{api_key}&q=#{zipcode}&days=5"
     response = HTTParty.get(url)
 
     format_response(response.body)

@@ -55,6 +55,8 @@ group :development, :test do
   gem 'rspec-rails', '~> 7.1'
   gem 'capybara'
   gem 'factory_bot', '~> 6.5'
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :development do
