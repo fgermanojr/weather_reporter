@@ -40,8 +40,8 @@ bundle exec rake rspec
 
 model spec to test validations
 request spec to test 2 ways of mocking api data
-system spec using capybara to test via ui using mocked api data
-cache was tested manually in rails console
+- system spec using capybara to test via ui using mocked api data
+- cache was tested manually in rails console
 
 * Services (job queues, cache servers, search engines, etc.)
 redis is running
@@ -53,10 +53,11 @@ set environment_varliable WEATHER_API_KEY to value from the weatherapi.com weath
 chosen because I could see it had the data, the doc and tools were good, it was quickly understandable, commercials versions existed. They are doing hobbiest a real servie
 
 On local
-Start redis
-Start rails server bundle exec rails s -p 2999
-On browser localhost:2999
-Enter 5 digit zipcode, create forecast button
+- Start redis
+- Start rails server bundle exec rails s -p 2999
+- On browser localhost:2999
+- Enter 5 digit zipcode, create forecast button
+
 Results shown for that zipcode including location,
 temperature, and 5 day forecast in table : date, min_temp_f, max_temp_f, and condition,
 
@@ -80,6 +81,5 @@ With thought of frequency of query over time against the rails service (the LOAD
  the service times of the service api call, the redis cache, and the database as cache,
  a more thoughtful decision could be made. 
  How many entries would typically be active at one time.
-the 
 
 Screen shots of landing page (enter zipcode) and results page send in separate email
