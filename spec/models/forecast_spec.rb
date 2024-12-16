@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Forecast, type: :model do
-  # test validations
+  # test validations, these will prevent a value from being searched
   describe ('good request') do
     let(:forecast) { Forecast.new(zipcode: '87507') }
 
@@ -41,4 +41,14 @@ RSpec.describe Forecast, type: :model do
       expect(forecast.valid?).to be_falsey
     end
   end
+
+  describe ('bad request, missing') do
+    let(:forecast) { Forecast.new(zipcode: nil) }
+
+    it 'is not valid' do
+      expect(forecast.valid?).to be_falsey
+    end
+  end
+
+  # TBD what are other model methods to test?
 end

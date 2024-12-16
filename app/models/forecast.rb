@@ -94,7 +94,11 @@ class Forecast < ApplicationRecord
   end
 
   def forecast_forecast(zipcode)
-    api_key = '162cfc912bc544bba9b195514241212' # TBD Get this from ENV['WEATHER_API_KEY' IS FAILING]
+    # TBD future,why is ENV['WEATHER_API_KEY'] failing? Should work.
+    # Secrets set on local maching using VISUAL="code --wait" bin/rails credentials:edit
+    # apis:
+    #   weather_api_key: <AVALUE>
+    api_key = Rails.application.credentials.apis[:weather_api_key]
     url = "#{FORECAST_URL}key=#{api_key}&q=#{zipcode}&days=5"
     response = HTTParty.get(url)
 

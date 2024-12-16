@@ -14,8 +14,17 @@ Things you may want to cover:
 * System dependencies
 Redis is installed and running
 
+* Set up weather_api_key on Rails credentials
+
+I used VISUAL="code --wait" bin/rails credentials:edit
+and set a section
+```
+ apis:
+   weather_api_key: <AVALUE>
+```
+
 * Configuration
-# Using native ruby 
+Using native ruby 
 
 * Database creation
 
@@ -41,7 +50,7 @@ redis is running
 
 set environment_varliable WEATHER_API_KEY to value from the weatherapi.com weather service.
  You get a free key from weatherapi.com;
-# chosen because I could see it had the data, the doc and tools were good, it was quickly understandable, commercials versions existed. They are doing hobbiest a real servie
+chosen because I could see it had the data, the doc and tools were good, it was quickly understandable, commercials versions existed. They are doing hobbiest a real servie
 
 On local
 Start redis
@@ -52,7 +61,9 @@ Results shown for that zipcode including location,
 temperature, and 5 day forecast in table : date, min_temp_f, max_temp_f, and condition,
 
 DESIGN NOTES
-Ok, so lets call a free api to get the needed wather data present it by zip code. weatherapi.com was chosen.
+Ok, so lets call a free api to get the needed weather data and present it by zip code.
+
+weatherapi.com was chosen as the service. 
 Quickly verified api worked with there was onsite tester see the payload. Reproduced from rails console.
 
 Key question is how to cache. Thought of rails cache (memory, redis, memcached).
@@ -71,3 +82,4 @@ With thought of frequency of query over time against the rails service (the LOAD
  How many entries would typically be active at one time.
 the 
 
+Screen shots of landing page (enter zipcode) and results page send in separate email
