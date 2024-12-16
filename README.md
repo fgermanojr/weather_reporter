@@ -82,4 +82,7 @@ With thought of frequency of query over time against the rails service (the LOAD
  a more thoughtful decision could be made. 
  How many entries would typically be active at one time.
 
-Screen shots of landing page (enter zipcode) and results page send in separate email
+Screen shots of landing page (enter zipcode) and results page included below
+
+![Enter Zip](https://github.com/fgermanojr/weather_reporter/master/app/assets/images/weather_new.png)
+![Results](https://github.com/fgermanojr/weather_reporter/master/app/assets/images/weather_show.png)
