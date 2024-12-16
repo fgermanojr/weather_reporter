@@ -62,6 +62,9 @@ RSpec.describe "Forecasts", type: :system do
     # page.should have_button('New Request')
     page.find(:xpath, '//a[@href="/forecasts/new"]')
     page.should have_link("New Request", :href => '/forecasts/new')
+    elem = page.find(:xpath, "//table[@id='forecast']/tbody/tr[1]/td[4]")
+    expect(elem.text()).to eql('Sunny')
+    expect(page).to have_selector(:xpath, "//table[@id='forecast']/tbody/tr[1]/td[4]")
     # TBD add additional, using xpath selectors
   end
 end

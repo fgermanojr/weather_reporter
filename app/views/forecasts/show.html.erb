@@ -1,7 +1,7 @@
 <h1>Forecasts#show</h1>
 <p id="notice"><%= notice %></p>
 <h2>Current</h2>
-<table>
+<table id ='current'>
   <tbody>
     <tr><td>Zip Code:</td><td><%= @zipcode%></td></tr>
     <tr><td>From Cache:</td><td><%= @is_cached ? 'From Cache' : '' %></td></tr>
@@ -11,7 +11,7 @@
   </tbody>
 </table>
 <h2>Forecast</h2>
-<table>
+<table id ='forecast'>
   <thead>
   <tr>
     <th>Date</th>
