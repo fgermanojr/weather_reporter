@@ -85,4 +85,4 @@ With thought of frequency of query over time against the rails service (the LOAD
 Screen shots of landing page (enter zipcode) and results page included below
 
 ![Enter Zip](https://github.com/fgermanojr/weather_reporter/master/app/assets/images/weather_new.png)
-![Results](https://github.com/fgermanojr/weather_reporter/master/app/assets/images/weather_show.png)
+![Results](https://github.com/fgermanojr/weather_reporter/blob/master/app/assets/images/weather_show.png)
