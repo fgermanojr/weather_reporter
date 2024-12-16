@@ -25,4 +25,20 @@ RSpec.describe Forecast, type: :model do
       expect(forecast.valid?).to be_falsey
     end
   end
+
+  describe ('bad request, blank') do
+    let(:forecast) { Forecast.new(zipcode: '') }
+
+    it 'is not valid' do
+      expect(forecast.valid?).to be_falsey
+    end
+  end
+
+  describe ('bad request, missing') do
+    let(:forecast) { Forecast.new(zipcode: nil) }
+
+    it 'is not valid' do
+      expect(forecast.valid?).to be_falsey
+    end
+  end
 end
